@@ -1,7 +1,7 @@
 # Личный проект «Кекстаграм» [![Build status][travis-image]][travis-url]
 
 * Студент: [Кирилл Королёв](https://up.htmlacademy.ru/javascript/18/user/675169).
-* Наставник: `Неизвестно`.
+* Наставник: 'Дамир Рысаев'.
 
 ---
 
