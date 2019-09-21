@@ -34,16 +34,6 @@ var getMessage = function (arr) {
   }
 };
 
-var getPhotoNumber = function (ammount) {
-  for (var i = 0; i < ammount; i++) {
-    var number = gerRandomBetweenTwo(1, 25);
-    if (number !== number[i]) {
-      return number;
-    }
-  }
-  return number;
-};
-
 var leftComments = [];
 
 var getComment = function (arr, number) {
