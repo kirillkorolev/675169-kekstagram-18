@@ -16,7 +16,7 @@ var getRandomNumber = function (number) {
 };
 
 var getRandomElement = function (arr) {
-  return getRandomNumber(arr.length);
+  return arr[gerRandomBetweenTwo(0, arr.length - 1)];
 };
 
 var gerRandomBetweenTwo = function (min, max) {
@@ -26,25 +26,26 @@ var gerRandomBetweenTwo = function (min, max) {
 
 var getMessage = function (arr) {
   if (gerRandomBetweenTwo(1, 2) === 1) {
-    return arr[getRandomNumber(arr.length)];
+    return arr[gerRandomBetweenTwo(0, arr.length - 1)];
   } else {
     return (
-      arr[getRandomNumber(arr.length)] + ' ' + arr[getRandomNumber(arr.length)]
+      arr[gerRandomBetweenTwo(0, arr.length - 1)] +
+      ' ' +
+      arr[gerRandomBetweenTwo(0, arr.length - 1)]
     );
   }
 };
 
-var leftComments = [];
-
-var getComment = function (arr, number) {
+var getComment = function (number) {
+  var leftComments = [];
   for (var i = 0; i < number; i++) {
     var comment = {
       avatar: 'img/avatar-' + gerRandomBetweenTwo(1, 6) + '.svg',
       message: getMessage(COMMENTS),
-      name: NAMES[getRandomElement(NAMES)]
+      name: getRandomElement(NAMES)
     };
 
-    arr[i] = comment;
+    leftComments[i] = comment;
   }
 
   return leftComments;
@@ -56,11 +57,10 @@ var getPhotosDescription = function (arr) {
       url: 'photos/' + (i + 1) + '.jpg',
       description: '',
       likes: gerRandomBetweenTwo(15, 200),
-      comments: getComment(leftComments, getRandomNumber(100))
+      comments: getComment(gerRandomBetweenTwo(0, 100))
     };
 
     arr[i] = photoDescription;
-    leftComments = [];
   }
   return arr;
 };
