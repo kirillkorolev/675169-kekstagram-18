@@ -11,10 +11,6 @@ var COMMENTS = [
 
 var NAMES = ['Артем', 'Михаил', 'Руслан', 'Татьяна', 'Валерия'];
 
-var getRandomNumber = function (number) {
-  return Math.floor(Math.random() * number);
-};
-
 var getRandomElement = function (arr) {
   return arr[gerRandomBetweenTwo(0, arr.length - 1)];
 };
