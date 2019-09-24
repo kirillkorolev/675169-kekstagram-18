@@ -86,3 +86,33 @@ for (var i = 0; i < descriptions.length; i++) {
   fragment.appendChild(renderDescriptions(descriptions[i]));
 }
 pictures.appendChild(fragment);
+
+var bigPicture = document.querySelector('.big-picture');
+bigPicture.classList.remove('hidden');
+
+bigPicture.querySelector('.big-picture__img img').src = descriptions[0].url;
+bigPicture.querySelector('.likes-count').innerHTML = descriptions[0].likes;
+bigPicture.querySelector('.comments-count').innerHTML =
+  descriptions[0].comments.length;
+
+var socialComments = bigPicture.querySelector('.social__comments');
+
+var renderComments = function (arr) {
+  var commentTemplate = socialComments.children[0].cloneNode(true);
+  commentTemplate.querySelector('.social__picture').src = arr.avatar;
+  commentTemplate.querySelector('.social__picture').alt = arr.name;
+  commentTemplate.querySelector('.social__text').textContent = arr.message;
+
+  return commentTemplate;
+};
+
+for (i = 0; i < descriptions[0].comments.length; i++) {
+  fragment.appendChild(renderComments(descriptions[0].comments[i]));
+}
+
+socialComments.replaceWith(fragment);
+
+bigPicture
+  .querySelector('.social__comment-count')
+  .classList.add('visually-hidden');
+bigPicture.querySelector('.comments-loader').classList.add('visually-hidden');
