@@ -151,7 +151,7 @@ var imagePreview = document.querySelector('.img-upload__preview img');
 var effects = ['none', 'chrome', 'sepia', 'marvin', 'phobos', 'heat'];
 
 for (i = 0; i < radioEffects.length; i++) {
-  var effect = effects[1];
+  var effect = effects[i];
   var radio = radioEffects[i];
 
   radio.addEventListener('change', function () {
