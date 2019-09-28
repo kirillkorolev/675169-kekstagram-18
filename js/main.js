@@ -116,3 +116,61 @@ bigPicture
   .querySelector('.social__comment-count')
   .classList.add('visually-hidden');
 bigPicture.querySelector('.comments-loader').classList.add('visually-hidden');
+
+bigPicture.classList.add('hidden');
+
+var ESC_KEYCODE = 27;
+
+var imageUpload = document.querySelector('.img-upload');
+var uploadFile = imageUpload.querySelector('.img-upload__input');
+var changeImagePopup = imageUpload.querySelector('.img-upload__overlay');
+var closePopupButton = changeImagePopup.querySelector('.img-upload__cancel');
+
+var onMenuEscPress = function (evt) {
+  if (evt.keyCode === ESC_KEYCODE) {
+    closePopup();
+  }
+};
+
+var openPopup = function () {
+  changeImagePopup.classList.remove('hidden');
+  document.addEventListener('keydown', onMenuEscPress);
+};
+
+var closePopup = function () {
+  changeImagePopup.classList.add('hidden');
+  document.removeEventListener('keydown', onMenuEscPress);
+};
+
+uploadFile.addEventListener('change', openPopup);
+closePopupButton.addEventListener('click', closePopup);
+
+var radioEffects = document.querySelectorAll('.effects__radio');
+var imagePreview = document.querySelector('.img-upload__preview img');
+
+var effects = ['none', 'chrome', 'sepia', 'marvin', 'phobos', 'heat'];
+
+for (i = 0; i < radioEffects.length; i++) {
+  var effect = effects[1];
+  var radio = radioEffects[i];
+
+  radio.addEventListener('change', function () {
+    imagePreview.classList.add('effects__preview--' + effect);
+  });
+}
+
+var smallerButton = imageUpload.querySelector('.scale__control--smaller');
+var biggerButton = imageUpload.querySelector('.scale__control--bigger');
+var sizeValue = imageUpload.querySelector('.scale__control--value');
+
+var maxValue = 100;
+
+sizeValue.value = maxValue + '%';
+
+biggerButton.addEventListener('click', function () {
+  sizeValue.value = parseInt(sizeValue.value, 10) + 25 + '%';
+});
+
+smallerButton.addEventListener('click', function () {
+  sizeValue.value = parseInt(sizeValue.value, 10) - 25 + '%';
+});
