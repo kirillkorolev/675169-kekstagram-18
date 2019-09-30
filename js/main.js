@@ -232,60 +232,38 @@ sliderPin.addEventListener('mouseup', function (evt) {
 });
 
 var inputHashTag = imageUpload.querySelector('.text__hashtags');
-var inputArr = inputHashTag.value.split(' ');
 
 inputHashTag.addEventListener('input', function () {
+  var inputArr = inputHashTag.value.trim().split(' ');
+
   if (inputArr.length > 5) {
     inputHashTag.setCustomValidity('слишком много хэштегов');
-  } else {
-    inputHashTag.setCustomValidity('');
+    return;
   }
 
-  var hashTag = inputArr[i].split('');
-  if (hashTag[0] !== '#') {
-    inputHashTag.setCustomValidity('хэштег должен начинать с #');
-  } else {
-    inputHashTag.setCustomValidity('');
+  if (inputArr.length > 1) {
+    var currentHashtag = inputArr[0];
+
+    for (i = 0; i < inputArr.length; i++) {
+      if (currentHashtag === inputArr[i]) {
+        inputHashTag.setCustomValidity('хэштег повтоярется');
+        return;
+      }
+      return;
+    }
   }
 
-  if (hashTag.length > 20) {
-    inputHashTag.setCustomValidity('слишком длинный хэштег');
-  } else {
-    inputHashTag.setCustomValidity('');
-  }
+  for (i = 0; i < inputArr.length; i++) {
+    var hashTag = inputArr[i];
 
-  var currentHashtag = hashTag[0];
-  if (currentHashtag === hashtagItem[i]) {
-    inputHashTag.setCustomValidity('хэштег повтоярется');
-  } else {
-    inputHashTag.setCustomValidity('');
+    if (hashTag[0] !== '#') {
+      inputHashTag.setCustomValidity('хэштег должен начинать с #');
+      return;
+    }
+
+    if (hashTag.length > 20) {
+      inputHashTag.setCustomValidity('слишком длинный хэштег');
+      return;
+    }
   }
 });
-
-if (inputHashTag.onblur) {
-  removeEventListener.onMenuEscPress();
-}
-
-var testArr1 = '#ssd #pOPo #lklkl #jlKLk #lk;l';
-
-var testArr = testArr1.toLowerCase().split(' ');
-
-if (testArr.length > 5) {
-  console.log('error');
-}
-
-for (i = 0; i < testArr.length; i++) {
-  var hashtagItem = testArr[i].split('');
-  if (hashtagItem[0] !== '#') {
-    console.log('хэштег должен начинать с #');
-  }
-
-  if (hashtagItem.length > 20) {
-    console.log('слишком длинный хэштег');
-  }
-
-  var currenthashtag = hashtagItem[0];
-  if (currenthashtag === hashtagItem[i]) {
-    console.log('хэштег повтоярется');
-  }
-}
