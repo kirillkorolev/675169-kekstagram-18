@@ -233,8 +233,30 @@ sliderPin.addEventListener('mouseup', function (evt) {
 
 var inputHashTag = imageUpload.querySelector('.text__hashtags');
 
+var isUniqArray = function (arr) {
+  for (i = 0; i < arr.length; i++) {
+    for (var j = i + 1; j < arr.length; j++) {
+      if (arr[i] === arr[j]) {
+        return false;
+      }
+    }
+  }
+  return true;
+};
+
+var hasHashtag = function (str) {
+  return str.lastIndexOf('#') === 0;
+};
+
+var isArrayHashTags = function (arr) {
+  return arr.every(hasHashtag);
+};
+
 inputHashTag.addEventListener('input', function () {
-  var inputArr = inputHashTag.value.trim().split(' ');
+  var inputArr = inputHashTag.value
+    .toLowerCase()
+    .trim()
+    .split(' ');
 
   if (inputArr.length > 5) {
     inputHashTag.setCustomValidity('слишком много хэштегов');
@@ -242,28 +264,27 @@ inputHashTag.addEventListener('input', function () {
   }
 
   if (inputArr.length > 1) {
-    var currentHashtag = inputArr[0];
-
-    for (i = 0; i < inputArr.length; i++) {
-      if (currentHashtag === inputArr[i]) {
-        inputHashTag.setCustomValidity('хэштег повтоярется');
-        return;
-      }
+    if (isUniqArray(inputArr) === false) {
+      inputHashTag.setCustomValidity('хэштеги повторяются');
       return;
     }
   }
 
   for (i = 0; i < inputArr.length; i++) {
-    var hashTag = inputArr[i];
-
-    if (hashTag[0] !== '#') {
+    if (isArrayHashTags(inputArr) === false) {
       inputHashTag.setCustomValidity('хэштег должен начинать с #');
       return;
     }
+
+    var hashTag = inputArr[i];
 
     if (hashTag.length > 20) {
       inputHashTag.setCustomValidity('слишком длинный хэштег');
       return;
     }
   }
+});
+
+inputHashTag.addEventListener('focus', function () {
+  document.removeEventListener('keydown', onMenuEscPress);
 });
