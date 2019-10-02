@@ -176,11 +176,9 @@ sizeValue.value = '100%';
 
 biggerButton.addEventListener('click', function () {
   sizeValue.value = parseInt(sizeValue.value, 10) + 25;
-  if (sizeValue.value <= maxValue) {
-    sizeValue.value = sizeValue.value + '%';
-  } else {
-    sizeValue.value = 100 + '%';
-  }
+  sizeValue.value =
+    sizeValue.value <= maxValue ? sizeValue.value + '%' : 100 + '%';
+
   imagePreview.style.transform =
     'scale(' + parseInt(sizeValue.value, 10) / 100 + ')';
 });
@@ -199,13 +197,11 @@ smallerButton.addEventListener('click', function () {
 var sliderPin = imageUpload.querySelector('.effect-level__pin');
 var slider = imageUpload.querySelector('.effect-level__line');
 
-var SLIDER_WIDTH = 495;
 sliderPin.addEventListener('mouseup', function (evt) {
   evt.preventDefault();
 
   var startCoords = {
-    x: evt.clientX,
-    y: evt.clientY
+    x: evt.clientX
   };
 
   var getCord = function (elem) {
@@ -214,20 +210,39 @@ sliderPin.addEventListener('mouseup', function (evt) {
     return box.left + pageXOffset;
   };
 
+  var getWidth = function (elem) {
+    var box = elem.getBoundingClientRect();
+
+    return box.right - box.left + pageXOffset;
+  };
+
   var intensity = Math.round(
-      ((startCoords.x - getCord(slider)) * 100) / (startCoords.x + SLIDER_WIDTH)
+      ((startCoords.x - getCord(slider)) * 100) / getWidth(slider)
   );
 
-  if (imagePreview.className === 'effects__preview--chrome') {
-    imagePreview.style.filter = 'grayscale(' + intensity + '%)';
-  } else if (imagePreview.className === 'effects__preview--sepia') {
-    imagePreview.style.filter = 'sepia(' + intensity + ')';
-  } else if (imagePreview.className === 'effects__preview--marvin') {
-    imagePreview.style.filter = 'invert(' + intensity + '%)';
-  } else if (imagePreview.className === 'effects__preview--phobos') {
-    imagePreview.style.filter = 'blur(' + intensity / 10 + 'px)';
-  } else if (imagePreview.className === 'effects__preview--heat') {
-    imagePreview.style.filter = 'brightness(' + intensity * 100 + '%)';
+  switch (imagePreview.className) {
+    case 'effects__preview--chrome':
+      imagePreview.style.filter = 'grayscale(' + intensity / 100;
+      break;
+
+    case 'effects__preview--sepia':
+      imagePreview.style.filter = 'sepia(' + intensity / 100;
+      break;
+
+    case 'effects__preview--marvin':
+      imagePreview.style.filter = 'invert(' + intensity + '%)';
+      break;
+
+    case 'effects__preview--phobos':
+      imagePreview.style.filter = 'blur(' + (intensity * 5) / 100 + 'px)';
+      break;
+
+    case 'effects__preview--heat':
+      imagePreview.style.filter = 'brightness(' + (intensity * 3) / 100;
+      break;
+    case 'effects__preview--none':
+      imagePreview.style.filter = '';
+      break;
   }
 });
 
@@ -266,16 +281,15 @@ inputHashTag.addEventListener('input', function () {
   if (inputArr.length > 1) {
     if (isUniqArray(inputArr) === false) {
       inputHashTag.setCustomValidity('хэштеги повторяются');
-      return;
     }
   }
 
-  for (i = 0; i < inputArr.length; i++) {
-    if (isArrayHashTags(inputArr) === false) {
-      inputHashTag.setCustomValidity('хэштег должен начинать с #');
-      return;
-    }
+  if (isArrayHashTags(inputArr) === false) {
+    inputHashTag.setCustomValidity('хэштег должен начинать с #');
+    return;
+  }
 
+  for (i = 0; i < inputArr.length; i++) {
     var hashTag = inputArr[i];
 
     if (hashTag.length > 20) {
