@@ -119,6 +119,40 @@ bigPicture.querySelector('.comments-loader').classList.add('visually-hidden');
 
 bigPicture.classList.add('hidden');
 
+var smallPicures = pictures.querySelectorAll('.picture');
+var bigPictureCloseButton = bigPicture.querySelector('.big-picture__cancel');
+
+var bigPicureOnMenuEscPress = function (evt) {
+  if (evt.keyCode === ESC_KEYCODE) {
+    closeBigPicture();
+  }
+};
+
+var openBigPicure = function () {
+  bigPicture.classList.remove('hidden');
+  document.addEventListener('keydown', bigPicureOnMenuEscPress);
+};
+
+var closeBigPicture = function () {
+  bigPicture.classList.add('hidden');
+  document.removeEventListener('keydown', bigPicureOnMenuEscPress);
+};
+
+for (var j = 0; j < smallPicures.length; j++) {
+  var smallPicture = smallPicures[j];
+
+  smallPicture.addEventListener(
+      'click',
+      function (index) {
+        bigPicture.querySelector('.big-picture__img img').src =
+        'photos/' + (index + 1) + '.jpg';
+        openBigPicure();
+      }.bind(null, j)
+  );
+}
+
+bigPictureCloseButton.addEventListener('click', closeBigPicture);
+
 var ESC_KEYCODE = 27;
 
 var imageUpload = document.querySelector('.img-upload');
@@ -299,6 +333,13 @@ inputHashTag.addEventListener('input', function () {
   }
 });
 
-inputHashTag.addEventListener('focus', function () {
-  document.removeEventListener('keydown', onMenuEscPress);
-});
+var textInput = imageUpload.querySelector('.text__description');
+
+var onFocusNotCloseMenu = function (input) {
+  input.addEventListener('focus', function () {
+    document.removeEventListener('keydown', onMenuEscPress);
+  });
+};
+
+onFocusNotCloseMenu(inputHashTag);
+onFocusNotCloseMenu(textInput);
