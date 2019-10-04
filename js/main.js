@@ -138,8 +138,8 @@ var closeBigPicture = function () {
   document.removeEventListener('keydown', bigPicureOnMenuEscPress);
 };
 
-for (var j = 0; j < smallPicures.length; j++) {
-  var smallPicture = smallPicures[j];
+for (i = 0; i < smallPicures.length; i++) {
+  var smallPicture = smallPicures[i];
 
   smallPicture.addEventListener(
       'click',
@@ -147,7 +147,7 @@ for (var j = 0; j < smallPicures.length; j++) {
         bigPicture.querySelector('.big-picture__img img').src =
         'photos/' + (index + 1) + '.jpg';
         openBigPicure();
-      }.bind(null, j)
+      }.bind(null, i)
   );
 }
 
