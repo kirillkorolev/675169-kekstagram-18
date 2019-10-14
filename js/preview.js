@@ -11,7 +11,15 @@
   bigPicture.querySelector('.comments-count').innerHTML =
     window.picture.descriptions[0].comments.length;
 
+  socialComments.replaceWith(window.picture.fragment);
+
   var socialComments = bigPicture.querySelector('.social__comments');
+
+  for (var i = 0; i < window.picture.descriptions[0].comments.length; i++) {
+    window.picture.fragment.appendChild(
+        renderComments(window.picture.descriptions[0].comments[i])
+    );
+  }
 
   var renderComments = function (arr) {
     var commentTemplate = socialComments.children[0].cloneNode(true);
@@ -22,13 +30,10 @@
     return commentTemplate;
   };
 
-  for (var i = 0; i < window.picture.descriptions[0].comments.length; i++) {
-    window.picture.fragment.appendChild(
-        renderComments(window.picture.descriptions[0].comments[i])
-    );
-  }
-
-  socialComments.replaceWith(window.picture.fragment);
+  bigPicture
+    .querySelector('.social__comment-count')
+    .classList.add('visually-hidden');
+  bigPicture.querySelector('.comments-loader').classList.add('visually-hidden');
 
   bigPicture
     .querySelector('.social__comment-count')
@@ -37,7 +42,7 @@
 
   bigPicture.classList.add('hidden');
 
-  var smallPicures = window.picture.pictures.querySelectorAll('.picture');
+  var smallPictures = window.picture.pictures.querySelectorAll('.picture');
   var bigPictureCloseButton = bigPicture.querySelector('.big-picture__cancel');
 
   var bigPicureOnMenuEscPress = function (evt) {
@@ -56,17 +61,20 @@
     document.removeEventListener('keydown', bigPicureOnMenuEscPress);
   };
 
-  for (i = 0; i < smallPicures.length; i++) {
-    var smallPicture = smallPicures[i];
+  for (i = 0; i < smallPictures.length; i++) {
+    var smallPicture = smallPictures[i];
+
+    var link = smallPicture.dataset.id;
 
     smallPicture.addEventListener(
         'click',
-        function (index) {
+        function () {
           bigPicture.querySelector('.big-picture__img img').src =
-          'photos/' + (index + 1) + '.jpg';
+          'photos/' + link + '.jpg';
           openBigPicure();
         }.bind(null, i)
     );
   }
+
   bigPictureCloseButton.addEventListener('click', closeBigPicture);
 })();
