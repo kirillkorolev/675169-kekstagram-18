@@ -29,16 +29,39 @@
     xhr.send();
   };
 
+  window.publish = function (data, onLoad, onError) {
+    var xhr = new XMLHttpRequest();
+
+    xhr.responseType = 'json';
+
+    xhr.addEventListener('load', function () {
+      if (xhr.status === 200) {
+        onLoad(xhr.response);
+      } else {
+        onError('Cтатус ответа: ' + xhr.status + ' ' + xhr.statusText);
+      }
+    });
+
+    xhr.addEventListener('error', function () {
+      onError('Произошла ошибка соединения');
+    });
+
+    xhr.addEventListener('timeout', function () {
+      onError('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
+    });
+
+    xhr.timeout = 10000;
+
+    xhr.open('POST', 'https://js.dump.academy/kekstagram');
+    xhr.send(data);
+  };
+
   var errorHandler = function () {
     var templateError = document
-      .querySelector('#picture')
+      .querySelector('#error')
       .content.querySelector('.error');
 
-    templateError.style.display = 'block';
-    templateError.style.position = 'absolute';
-    templateError.style.left = '50%';
-    templateError.style.right = '50%';
-    document.body.insertAdjacentElement('afterbegin', templateError);
+    document.main.insertAdjacentElement('afterbegin', templateError);
   };
 
   window.backend = {
