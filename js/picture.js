@@ -1,10 +1,6 @@
 'use strict';
 
 (function () {
-  // var descriptions = [];
-
-  // window.data.getPhotosDescription(descriptions);
-
   var template = document
     .querySelector('#picture')
     .content.querySelector('.picture');
@@ -20,13 +16,7 @@
     return descriptionElement;
   };
 
-  // var fragment = document.createDocumentFragment();
   var pictures = document.querySelector('.pictures');
-
-  // for (var i = 0; i < descriptions.length; i++) {
-  //  fragment.appendChild(renderDescriptions(descriptions[i]));
-  // }
-  // pictures.appendChild(fragment);
 
   var successHandler = function (photos) {
     var fragment = document.createDocumentFragment();
@@ -43,7 +33,7 @@
     }
   };
 
-  window.load(successHandler, window.backend.errorHandler);
+  window.load(successHandler, window.form.errorHandler);
 
   window.picture = {
     pictures: pictures,

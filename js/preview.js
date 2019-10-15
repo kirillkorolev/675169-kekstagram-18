@@ -32,7 +32,7 @@
 
   for (var i = 0; i < smallPictures.length; i++) {
     var smallPicture = smallPictures[i];
-    console.log(123);
+
     var link = smallPicture.dataset.id;
 
     smallPicture.addEventListener(

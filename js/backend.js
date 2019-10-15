@@ -55,16 +55,4 @@
     xhr.open('POST', 'https://js.dump.academy/kekstagram');
     xhr.send(data);
   };
-
-  var errorHandler = function () {
-    var templateError = document
-      .querySelector('#error')
-      .content.querySelector('.error');
-
-    document.main.insertAdjacentElement('afterbegin', templateError);
-  };
-
-  window.backend = {
-    errorHandler: errorHandler
-  };
 })();

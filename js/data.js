@@ -64,11 +64,48 @@
     return arr;
   };
 
+  var onMessageEscPress = function (evt) {
+    if (evt.keyCode === window.data.ESC_KEYCODE) {
+      closeMessage();
+    }
+  };
+
+  var closeMessage = function () {
+    var block = document.querySelector('.message');
+    block.remove();
+    document.removeEventListener('keydown', onMessageEscPress);
+    document.removeEventListener('click', closeMessageOnClick);
+  };
+
+  var closeMessageOnButton = function (buttonSelector, selector) {
+    var block = document.querySelector(selector);
+    block.classList.add('message');
+
+    var button = block.querySelector(buttonSelector);
+    button.addEventListener('click', closeMessage);
+  };
+
+  var closeMessageOnClick = function () {
+    document.addEventListener('click', closeMessage);
+    closeMessage();
+  };
+
+  var showMessage = function (selector) {
+    var main = document.querySelector('main');
+    var template = document.querySelector(selector).content.cloneNode(true);
+
+    main.appendChild(template);
+    document.addEventListener('keydown', onMessageEscPress);
+    document.addEventListener('click', closeMessageOnClick);
+  };
+
   window.data = {
     ESC_KEYCODE: ESC_KEYCODE,
     COMMENTS: COMMENTS,
     NAMES: NAMES,
     getComment: getComment,
-    getPhotosDescription: getPhotosDescription
+    getPhotosDescription: getPhotosDescription,
+    closeMessageOnButton: closeMessageOnButton,
+    showMessage: showMessage
   };
 })();

@@ -22,8 +22,7 @@
   var closePopup = function () {
     changeImagePopup.classList.add('hidden');
     document.removeEventListener('keydown', onMenuEscPress);
-    imagePreview.className = '';
-    imagePreview.classList.add('effects__preview--none');
+    resetForm();
   };
 
   uploadFile.addEventListener('change', openPopup);
@@ -248,51 +247,36 @@
 
   var form = document.querySelector('.img-upload__form');
 
-  // var error = document.querySelector('.error');
-
-  // var errorCloseButton = document.querySelector('.error__button');
-
-  var onMessageEscPress = function (evt) {
-    if (evt.keyCode === window.data.ESC_KEYCODE) {
-      closeMessage();
-    }
-  };
-
-  var closeMessage = function (block) {
-    block.remove();
-    document.removeEventListener('keydown', onMessageEscPress);
-  };
-
-  var closeMessageOnButton = function (buttonSelector, selector) {
-    var block = document.querySelector(selector);
-    var button = block.querySelector(buttonSelector);
-    block.remove();
-    button.addEventListener('click', closeMessage);
-  };
-
-  var showMessage = function (selector) {
-    var main = document.querySelector('main');
-    var template = document.querySelector(selector).content.cloneNode(true);
-    main.appendChild(template);
-    document.addEventListener('keydown', onMessageEscPress);
+  var resetForm = function () {
+    inputHashTag.value = '';
+    textInput.value = '';
+    sizeValue.value = '100%';
+    imagePreview.src = 'img/upload-default-image.jpg';
+    imagePreview.style = '';
+    imagePreview.classList = '';
+    imagePreview.classList.add('effects__preview--none');
   };
 
   var onSuccessHandler = function () {
     changeImagePopup.classList.add('hidden');
-    showMessage('#success');
-
-    closeMessageOnButton('.success__button', '.success');
+    window.data.showMessage('#success');
+    resetForm();
+    window.data.closeMessageOnButton('.success__button', '.success');
   };
 
   var errorHandler = function () {
     changeImagePopup.classList.add('hidden');
-    showMessage('#error');
-
-    closeMessageOnButton('.error__button', '.error');
+    window.data.showMessage('#error');
+    resetForm();
+    window.data.closeMessageOnButton('.error__button', '.error');
   };
 
   form.addEventListener('submit', function (evt) {
     window.publish(new FormData(form), onSuccessHandler, errorHandler);
     evt.preventDefault();
   });
+
+  window.form = {
+    errorHandler: errorHandler
+  };
 })();
