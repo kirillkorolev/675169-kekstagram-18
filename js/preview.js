@@ -11,11 +11,10 @@
 
   bigPicture.classList.add('hidden');
 
-  var smallPictures = window.picture.pictures.querySelectorAll('.picture');
   var bigPictureCloseButton = bigPicture.querySelector('.big-picture__cancel');
 
   var bigPicureOnMenuEscPress = function (evt) {
-    if (evt.keyCode === window.data.ESC_KEYCODE) {
+    if (evt.keyCode === window.constants.ESC_KEYCODE) {
       closeBigPicture();
     }
   };
@@ -30,12 +29,15 @@
     document.removeEventListener('keydown', bigPicureOnMenuEscPress);
   };
 
+  var smallPictures = window.picture.picturesNode.querySelectorAll('.picture');
+  var pictures = document.querySelector('.pictures');
+
   for (var i = 0; i < smallPictures.length; i++) {
     var smallPicture = smallPictures[i];
 
     var link = smallPicture.dataset.id;
 
-    smallPicture.addEventListener(
+    pictures.closest('.pictures').addEventListener(
         'click',
         function () {
           bigPicture.querySelector('.big-picture__img img').src =

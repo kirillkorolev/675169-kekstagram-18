@@ -8,7 +8,7 @@
   var sliderBlock = imageUpload.querySelector('.img-upload__effect-level');
 
   var onMenuEscPress = function (evt) {
-    if (evt.keyCode === window.data.ESC_KEYCODE) {
+    if (evt.keyCode === window.constants.ESC_KEYCODE) {
       closePopup();
     }
   };
@@ -37,6 +37,35 @@
 
   var effects = ['none', 'chrome', 'sepia', 'marvin', 'phobos', 'heat'];
 
+  var setFilter = function () {
+    var intensity = 100;
+
+    switch (imagePreview.className) {
+      case 'effects__preview--chrome':
+        imagePreview.style.filter = 'grayscale(' + intensity / 100;
+        break;
+
+      case 'effects__preview--sepia':
+        imagePreview.style.filter = 'sepia(' + intensity / 100;
+        break;
+
+      case 'effects__preview--marvin':
+        imagePreview.style.filter = 'invert(' + intensity + '%)';
+        break;
+
+      case 'effects__preview--phobos':
+        imagePreview.style.filter = 'blur(' + (intensity * 5) / 100 + 'px)';
+        break;
+
+      case 'effects__preview--heat':
+        imagePreview.style.filter = 'brightness(' + (intensity * 3) / 100;
+        break;
+      case 'effects__preview--none':
+        imagePreview.style.filter = '';
+        break;
+    }
+  };
+
   for (var i = 0; i < radioEffects.length; i++) {
     var radio = radioEffects[i];
 
@@ -53,32 +82,7 @@
           imagePreview.className = '';
           imagePreview.classList.add('effects__preview--' + effect);
 
-          var intensity = 100;
-
-          switch (imagePreview.className) {
-            case 'effects__preview--chrome':
-              imagePreview.style.filter = 'grayscale(' + intensity / 100;
-              break;
-
-            case 'effects__preview--sepia':
-              imagePreview.style.filter = 'sepia(' + intensity / 100;
-              break;
-
-            case 'effects__preview--marvin':
-              imagePreview.style.filter = 'invert(' + intensity + '%)';
-              break;
-
-            case 'effects__preview--phobos':
-              imagePreview.style.filter = 'blur(' + (intensity * 5) / 100 + 'px)';
-              break;
-
-            case 'effects__preview--heat':
-              imagePreview.style.filter = 'brightness(' + (intensity * 3) / 100;
-              break;
-            case 'effects__preview--none':
-              imagePreview.style.filter = '';
-              break;
-          }
+          setFilter();
         }.bind(null, i)
     );
   }
@@ -110,30 +114,7 @@
       var intensity = Math.round((pinPosition * 100) / slider.offsetWidth);
       sliderDepth.style.width = intensity + '%';
 
-      switch (imagePreview.className) {
-        case 'effects__preview--chrome':
-          imagePreview.style.filter = 'grayscale(' + intensity / 100;
-          break;
-
-        case 'effects__preview--sepia':
-          imagePreview.style.filter = 'sepia(' + intensity / 100;
-          break;
-
-        case 'effects__preview--marvin':
-          imagePreview.style.filter = 'invert(' + intensity + '%)';
-          break;
-
-        case 'effects__preview--phobos':
-          imagePreview.style.filter = 'blur(' + (intensity * 5) / 100 + 'px)';
-          break;
-
-        case 'effects__preview--heat':
-          imagePreview.style.filter = 'brightness(' + (intensity * 3) / 100;
-          break;
-        case 'effects__preview--none':
-          imagePreview.style.filter = '';
-          break;
-      }
+      setFilter();
 
       startCoords = {
         x: moveEvt.clientX
@@ -154,26 +135,27 @@
   var biggerButton = imageUpload.querySelector('.scale__control--bigger');
   var sizeValue = imageUpload.querySelector('.scale__control--value');
 
-  var maxValue = 100;
-  var minValue = 25;
-
   sizeValue.value = '100%';
 
   biggerButton.addEventListener('click', function () {
-    sizeValue.value = parseInt(sizeValue.value, 10) + 25;
     sizeValue.value =
-      sizeValue.value <= maxValue ? sizeValue.value + '%' : 100 + '%';
+      parseInt(sizeValue.value, 10) + window.constants.SHIFT_PERCENT;
+    sizeValue.value =
+      sizeValue.value <= window.constants.MAX_PERCENT
+        ? sizeValue.value + '%'
+        : 100 + '%';
 
     imagePreview.style.transform =
       'scale(' + parseInt(sizeValue.value, 10) / 100 + ')';
   });
 
   smallerButton.addEventListener('click', function () {
-    sizeValue.value = parseInt(sizeValue.value, 10) - 25;
-    if (sizeValue.value >= minValue) {
+    sizeValue.value =
+      parseInt(sizeValue.value, 10) - window.constants.SHIFT_PERCENT;
+    if (sizeValue.value >= window.constants.MIN_PERCENT) {
       sizeValue.value = sizeValue.value + '%';
     } else {
-      sizeValue.value = 25 + '%';
+      sizeValue.value = window.constants.MIN_PERCENT + '%';
     }
     imagePreview.style.transform =
       'scale(' + parseInt(sizeValue.value, 10) / 100 + ')';

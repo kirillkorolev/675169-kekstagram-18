@@ -1,8 +1,6 @@
 'use strict';
 
 (function () {
-  var ESC_KEYCODE = 27;
-
   var COMMENTS = [
     'Всё отлично!',
     'В целом всё неплохо. Но не всё.',
@@ -65,7 +63,7 @@
   };
 
   var onMessageEscPress = function (evt) {
-    if (evt.keyCode === window.data.ESC_KEYCODE) {
+    if (evt.keyCode === window.constants.ESC_KEYCODE) {
       closeMessage();
     }
   };
@@ -100,7 +98,6 @@
   };
 
   window.data = {
-    ESC_KEYCODE: ESC_KEYCODE,
     COMMENTS: COMMENTS,
     NAMES: NAMES,
     getComment: getComment,

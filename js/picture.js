@@ -16,7 +16,7 @@
     return descriptionElement;
   };
 
-  var pictures = document.querySelector('.pictures');
+  var picturesNode = document.querySelector('.pictures');
 
   var successHandler = function (photos) {
     var fragment = document.createDocumentFragment();
@@ -24,19 +24,19 @@
     for (var i = 0; i < photos.length; i++) {
       fragment.appendChild(renderDescriptions(photos[i]));
     }
-    pictures.appendChild(fragment);
+    picturesNode.appendChild(fragment);
 
-    var smallPictures = pictures.querySelectorAll('.picture');
+    var smallPictures = picturesNode.querySelectorAll('.picture');
 
     for (i = 0; i < smallPictures.length; i++) {
-      smallPictures[i].setAttribute('data-id', i + 1);
+      smallPictures[i].setAttribute('data-id', i);
     }
   };
 
   window.load(successHandler, window.form.errorHandler);
 
   window.picture = {
-    pictures: pictures,
+    picturesNode: picturesNode,
     successHandler: successHandler
   };
 })();
