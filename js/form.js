@@ -254,7 +254,7 @@
   };
 
   form.addEventListener('submit', function (evt) {
-    window.publish(new FormData(form), onSuccessHandler, errorHandler);
+    window.backend.publish(new FormData(form), onSuccessHandler, errorHandler);
     evt.preventDefault();
   });
 

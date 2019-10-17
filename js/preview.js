@@ -29,23 +29,17 @@
     document.removeEventListener('keydown', bigPicureOnMenuEscPress);
   };
 
-  var smallPictures = window.picture.picturesNode.querySelectorAll('.picture');
-  var pictures = document.querySelector('.pictures');
+  window.picture.picturesNode.addEventListener('click', function (event) {
+    var target = event.target.closest('.picture');
 
-  for (var i = 0; i < smallPictures.length; i++) {
-    var smallPicture = smallPictures[i];
+    if (target.closest('.pictures') === window.picture.picturesNode) {
+      var id = target.dataset.id;
 
-    var link = smallPicture.dataset.id;
-
-    pictures.closest('.pictures').addEventListener(
-        'click',
-        function () {
-          bigPicture.querySelector('.big-picture__img img').src =
-          'photos/' + link + '.jpg';
-          openBigPicure();
-        }.bind(null, i)
-    );
-  }
+      bigPicture.querySelector('.big-picture__img img').src =
+        'photos/' + id + '.jpg';
+      openBigPicure();
+    }
+  });
 
   bigPictureCloseButton.addEventListener('click', closeBigPicture);
 })();
