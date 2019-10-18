@@ -41,5 +41,25 @@
     }
   });
 
+  var renderComments = function (arr) {
+    var socialComments = bigPicture.querySelector('.social__comments');
+    var commentTemplate = socialComments.children[0].cloneNode(true);
+    commentTemplate.querySelector('.social__picture').src = arr.comments.avatar;
+    commentTemplate.querySelector('.social__picture').alt = arr.comments.name;
+    commentTemplate.querySelector('.social__text').textContent =
+      arr.comments.message;
+
+    return commentTemplate;
+  };
+
+  var successHandler = function (abc) {
+    for (var i = 0; i < abc.length; i++) {
+      var oneComment = abc[i];
+      renderComments(oneComment);
+    }
+  };
+
+  window.backend.load(successHandler, window.form.errorHandler);
+
   bigPictureCloseButton.addEventListener('click', closeBigPicture);
 })();
