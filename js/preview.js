@@ -5,11 +5,6 @@
   var bigPicture = document.querySelector('.big-picture');
   bigPicture.classList.remove('hidden');
 
-  bigPicture
-    .querySelector('.social__comment-count')
-    .classList.add('visually-hidden');
-  bigPicture.querySelector('.comments-loader').classList.add('visually-hidden');
-
   bigPicture.classList.add('hidden');
 
   var bigPictureCloseButton = bigPicture.querySelector('.big-picture__cancel');
@@ -43,6 +38,13 @@
 
   var fragmentComments = document.createDocumentFragment();
 
+  var showComments = function (arr, number) {
+    for (var i = 0; i < number; i++) {
+      fragmentComments.appendChild(renderComments(arr[i]));
+    }
+    socialComments.replaceWith(fragmentComments);
+  };
+
   window.picture.picturesNode.addEventListener('click', function (event) {
     var target = event.target.closest('.picture');
 
@@ -58,12 +60,29 @@
       bigPicture.querySelector('.social__caption').textContent =
         loadedData[id - 1].description;
 
-      for (var i = 0; i < loadedData[id - 1].comments.length; i++) {
-        fragmentComments.appendChild(
-            renderComments(loadedData[id - 1].comments[i])
+      if (loadedData[id - 1].comments.length < 5) {
+        bigPicture
+          .querySelector('.social__comment-count')
+          .classList.add('visually-hidden');
+        bigPicture
+          .querySelector('.comments-loader')
+          .classList.add('visually-hidden');
+
+        bigPicture.querySelector('.comments-count').remove();
+        bigPicture.querySelector(
+            ('.social__comment-count'.textContent =
+            loadedData[id - 1].comments.length - 1 + 'комментраиев')
         );
+
+        showComments(
+            loadedData[id - 1].comments,
+            loadedData[id - 1].comments.length
+        );
+      } else {
+        bigPicture.querySelector('.comments-count').textContent =
+          loadedData[id - 1].comments.length - 1;
+        showComments(loadedData[id - 1].comments, 5);
       }
-      socialComments.replaceWith(fragmentComments);
     }
   });
 
