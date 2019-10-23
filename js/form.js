@@ -6,6 +6,17 @@
   var changeImagePopup = imageUpload.querySelector('.img-upload__overlay');
   var closePopupButton = changeImagePopup.querySelector('.img-upload__cancel');
   var sliderBlock = imageUpload.querySelector('.img-upload__effect-level');
+  var radioEffects = document.querySelectorAll('.effects__radio');
+  var imagePreview = document.querySelector('.img-upload__preview img');
+  var sliderPin = imageUpload.querySelector('.effect-level__pin');
+  var slider = imageUpload.querySelector('.effect-level__line');
+  var sliderDepth = imageUpload.querySelector('.effect-level__depth');
+  var effects = ['none', 'chrome', 'sepia', 'marvin', 'phobos', 'heat'];
+  var smallerButton = imageUpload.querySelector('.scale__control--smaller');
+  var biggerButton = imageUpload.querySelector('.scale__control--bigger');
+  var sizeValue = imageUpload.querySelector('.scale__control--value');
+  var textInput = imageUpload.querySelector('.text__description');
+  var form = document.querySelector('.img-upload__form');
 
   var onMenuEscPress = function (evt) {
     if (evt.keyCode === window.constants.ESC_KEYCODE) {
@@ -28,40 +39,36 @@
   uploadFile.addEventListener('change', openPopup);
   closePopupButton.addEventListener('click', closePopup);
 
-  var radioEffects = document.querySelectorAll('.effects__radio');
-  var imagePreview = document.querySelector('.img-upload__preview img');
-
-  var sliderPin = imageUpload.querySelector('.effect-level__pin');
-  var slider = imageUpload.querySelector('.effect-level__line');
-  var sliderDepth = imageUpload.querySelector('.effect-level__depth');
-
-  var effects = ['none', 'chrome', 'sepia', 'marvin', 'phobos', 'heat'];
-
-  var setFilter = function () {
-    var intensity = 100;
-
+  var setFilter = function (intenseness) {
     switch (imagePreview.className) {
       case 'effects__preview--chrome':
-        imagePreview.style.filter = 'grayscale(' + intensity / 100;
+        imagePreview.style.filter = 'grayscale(1)';
+        imagePreview.style.filter = 'grayscale(' + intenseness / 100 + ')';
         break;
 
       case 'effects__preview--sepia':
-        imagePreview.style.filter = 'sepia(' + intensity / 100;
+        imagePreview.style.filter = 'sepia(1)';
+        imagePreview.style.filter = 'sepia(' + intenseness / 100 + ')';
         break;
 
       case 'effects__preview--marvin':
-        imagePreview.style.filter = 'invert(' + intensity + '%)';
+        imagePreview.style.filter = 'invert(100%)';
+        imagePreview.style.filter = 'invert(' + intenseness + '%)';
         break;
 
       case 'effects__preview--phobos':
-        imagePreview.style.filter = 'blur(' + (intensity * 5) / 100 + 'px)';
+        imagePreview.style.filter = 'blur(5px)';
+        imagePreview.style.filter = 'blur(' + (intenseness * 5) / 100 + 'px)';
         break;
 
       case 'effects__preview--heat':
-        imagePreview.style.filter = 'brightness(' + (intensity * 3) / 100;
+        imagePreview.style.filter = 'brightness(3)';
+        imagePreview.style.filter =
+          'brightness(' + (intenseness * 3) / 100 + ')';
         break;
       case 'effects__preview--none':
         imagePreview.style.filter = '';
+        sliderBlock.classList.add('hidden');
         break;
     }
   };
@@ -114,7 +121,7 @@
       var intensity = Math.round((pinPosition * 100) / slider.offsetWidth);
       sliderDepth.style.width = intensity + '%';
 
-      setFilter();
+      setFilter(intensity);
 
       startCoords = {
         x: moveEvt.clientX
@@ -130,12 +137,6 @@
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
   });
-
-  var smallerButton = imageUpload.querySelector('.scale__control--smaller');
-  var biggerButton = imageUpload.querySelector('.scale__control--bigger');
-  var sizeValue = imageUpload.querySelector('.scale__control--value');
-
-  sizeValue.value = '100%';
 
   biggerButton.addEventListener('click', function () {
     sizeValue.value =
@@ -216,8 +217,6 @@
     }
   });
 
-  var textInput = imageUpload.querySelector('.text__description');
-
   var onFocusNotCloseMenu = function (input) {
     input.addEventListener('focus', function () {
       document.removeEventListener('keydown', onMenuEscPress);
@@ -226,8 +225,6 @@
 
   onFocusNotCloseMenu(inputHashTag);
   onFocusNotCloseMenu(textInput);
-
-  var form = document.querySelector('.img-upload__form');
 
   var resetForm = function () {
     inputHashTag.value = '';

@@ -19,25 +19,33 @@
   var picturesNode = document.querySelector('.pictures');
   var filters = document.querySelector('.img-filters');
 
-  var successHandler = function (photos) {
+  var renderPictures = function (photos) {
     var fragment = document.createDocumentFragment();
 
-    for (var i = 0; i < photos.length; i++) {
-      fragment.appendChild(renderDescriptions(photos[i]));
-    }
+    photos.forEach(function (photo) {
+      fragment.appendChild(renderDescriptions(photo));
+    });
+
     picturesNode.appendChild(fragment);
 
     filters.classList.remove('img-filters--inactive');
 
     var smallPictures = picturesNode.querySelectorAll('.picture');
-    for (i = 0; i < smallPictures.length; i++) {
+
+    for (var i = 0; i < smallPictures.length; i++) {
       smallPictures[i].setAttribute('data-id', i + 1);
     }
+  };
+
+  var successHandler = function (photos) {
+    window.picture.loadedData = photos;
+    renderPictures(photos);
   };
 
   window.backend.load(successHandler, window.form.errorHandler);
 
   window.picture = {
+    renderPictures: renderPictures,
     filters: filters,
     picturesNode: picturesNode,
     successHandler: successHandler
