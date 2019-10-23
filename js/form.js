@@ -17,6 +17,7 @@
   var sizeValue = imageUpload.querySelector('.scale__control--value');
   var textInput = imageUpload.querySelector('.text__description');
   var form = document.querySelector('.img-upload__form');
+  var inputHashTag = imageUpload.querySelector('.text__hashtags');
 
   var onMenuEscPress = function (evt) {
     if (evt.keyCode === window.constants.ESC_KEYCODE) {
@@ -161,8 +162,6 @@
     imagePreview.style.transform =
       'scale(' + parseInt(sizeValue.value, 10) / 100 + ')';
   });
-
-  var inputHashTag = imageUpload.querySelector('.text__hashtags');
 
   var isUniqArray = function (arr) {
     for (i = 0; i < arr.length; i++) {

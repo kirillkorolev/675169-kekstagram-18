@@ -1,9 +1,16 @@
 'use strict';
 
 (function () {
-  var randomInteger = function (min, max) {
-    var rand = min - 0.5 + Math.random() * (max - min + 1);
-    return Math.round(rand);
+  var shuffle = function (arr) {
+    var j;
+    var temp;
+    for (var i = arr.length - 1; i > 0; i--) {
+      j = Math.floor(Math.random() * (i + 1));
+      temp = arr[j];
+      arr[j] = arr[i];
+      arr[i] = temp;
+    }
+    return arr;
   };
 
   var onMessageEscPress = function (evt) {
@@ -42,7 +49,7 @@
   };
 
   window.data = {
-    randomInteger: randomInteger,
+    shuffle: shuffle,
     closeMessageOnButton: closeMessageOnButton,
     showMessage: showMessage
   };

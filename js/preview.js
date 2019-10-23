@@ -8,6 +8,7 @@
       '.img-filters__button'
   );
   var socialComments = bigPicture.querySelector('.social__comments');
+  var commentsLoaderButton = bigPicture.querySelector('.comments-loader');
 
   var bigPicureOnMenuEscPress = function (evt) {
     if (evt.keyCode === window.constants.ESC_KEYCODE) {
@@ -58,31 +59,37 @@
         window.picture.loadedData[id - 1].likes;
       bigPicture.querySelector('.social__caption').textContent =
         window.picture.loadedData[id - 1].description;
-
-      if (window.picture.loadedData[id - 1].comments.length < 5) {
+      var commentsAmmount = window.picture.loadedData[id - 1].comments.length;
+      if (commentsAmmount < 5) {
         bigPicture
           .querySelector('.social__comment-count')
           .classList.add('visually-hidden');
-        bigPicture
-          .querySelector('.comments-loader')
-          .classList.add('visually-hidden');
+
+        commentsLoaderButton.classList.add('visually-hidden');
 
         bigPicture.querySelector('.comments-count').remove();
         bigPicture.querySelector(
             ('.social__comment-count'.textContent =
-            window.picture.loadedData[id - 1].comments.length -
-            1 +
-            'комментраиев')
+            commentsAmmount - 1 + 'комментраиев')
         );
 
         showComments(
             window.picture.loadedData[id - 1].comments,
-            window.picture.loadedData[id - 1].comments.length
+            commentsAmmount
         );
       } else {
-        bigPicture.querySelector('.comments-count').textContent =
-          window.picture.loadedData[id - 1].comments.length;
+        bigPicture.querySelector(
+            '.comments-count'
+        ).textContent = commentsAmmount;
         showComments(window.picture.loadedData[id - 1].comments, 5);
+
+        commentsLoaderButton.addEventListener('click', function () {
+          if (commentsAmmount > 5) {
+            showComments(window.picture.loadedData[id - 1].comments, 5);
+          } else {
+            commentsLoaderButton.classList.add('visually-hidden');
+          }
+        });
       }
     }
   });
@@ -90,11 +97,11 @@
   var filterRandomPictures = function () {
     var randomPictures = [];
 
-    for (var i = 0; i < 10; i++) {
-      randomPictures.push(
-          window.picture.loadedData[window.data.randomInteger(0, 25)]
-      );
-    }
+    randomPictures = window.data
+      .shuffle(window.picture.loadedData)
+      .slice(0, 10);
+
+    console.log(randomPictures);
     window.picture.renderPictures(randomPictures);
   };
 
