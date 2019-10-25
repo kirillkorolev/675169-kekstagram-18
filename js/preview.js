@@ -134,19 +134,19 @@
           switch (filter.id) {
             case 'filter-random':
               removePictures();
-              // window.picture.successHandler(filterRandomPictures());
+              //  window.picture.successHandler(filterRandomPictures());
               filterRandomPictures();
 
               break;
             case 'filter-discussed':
               removePictures();
-              // window.picture.successHandler(filterDiscussedPictures());
+              //  window.picture.successHandler(filterDiscussedPictures());
               filterDiscussedPictures();
               break;
             case 'filter-popular':
               removePictures();
 
-              // window.picture.successHandler(window.picture.loadedData);
+              //  window.picture.successHandler(window.picture.loadedData);
               window.picture.renderPictures(window.picture.loadedData);
               break;
           }
