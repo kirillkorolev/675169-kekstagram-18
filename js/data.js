@@ -48,9 +48,24 @@
     document.addEventListener('click', closeMessageOnClick);
   };
 
+  var debounce = function (cb) {
+    var lastTimeout = null;
+
+    return function () {
+      var parameters = arguments;
+      if (lastTimeout) {
+        window.clearTimeout(lastTimeout);
+      }
+      lastTimeout = window.setTimeout(function () {
+        cb.apply(null, parameters);
+      }, window.constants.DEBOUNCE_INTERVAL);
+    };
+  };
+
   window.data = {
     shuffle: shuffle,
     closeMessageOnButton: closeMessageOnButton,
-    showMessage: showMessage
+    showMessage: showMessage,
+    debounce: debounce
   };
 })();
