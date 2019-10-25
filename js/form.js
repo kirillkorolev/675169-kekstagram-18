@@ -5,32 +5,74 @@
   var uploadFile = imageUpload.querySelector('.img-upload__input');
   var changeImagePopup = imageUpload.querySelector('.img-upload__overlay');
   var closePopupButton = changeImagePopup.querySelector('.img-upload__cancel');
+  var sliderBlock = imageUpload.querySelector('.img-upload__effect-level');
+  var radioEffects = document.querySelectorAll('.effects__radio');
+  var imagePreview = document.querySelector('.img-upload__preview img');
+  var sliderPin = imageUpload.querySelector('.effect-level__pin');
+  var slider = imageUpload.querySelector('.effect-level__line');
+  var sliderDepth = imageUpload.querySelector('.effect-level__depth');
+  var effects = ['none', 'chrome', 'sepia', 'marvin', 'phobos', 'heat'];
+  var smallerButton = imageUpload.querySelector('.scale__control--smaller');
+  var biggerButton = imageUpload.querySelector('.scale__control--bigger');
+  var sizeValue = imageUpload.querySelector('.scale__control--value');
+  var textInput = imageUpload.querySelector('.text__description');
+  var form = document.querySelector('.img-upload__form');
+  var inputHashTag = imageUpload.querySelector('.text__hashtags');
 
   var onMenuEscPress = function (evt) {
-    if (evt.keyCode === window.data.ESC_KEYCODE) {
+    if (evt.keyCode === window.constants.ESC_KEYCODE) {
       closePopup();
     }
   };
 
   var openPopup = function () {
     changeImagePopup.classList.remove('hidden');
+    sliderBlock.classList.add('hidden');
     document.addEventListener('keydown', onMenuEscPress);
   };
 
   var closePopup = function () {
     changeImagePopup.classList.add('hidden');
     document.removeEventListener('keydown', onMenuEscPress);
-    imagePreview.className = '';
-    imagePreview.classList.add('effects__preview--none');
+    resetForm();
   };
 
   uploadFile.addEventListener('change', openPopup);
   closePopupButton.addEventListener('click', closePopup);
 
-  var radioEffects = document.querySelectorAll('.effects__radio');
-  var imagePreview = document.querySelector('.img-upload__preview img');
+  var setFilter = function (intenseness) {
+    switch (imagePreview.className) {
+      case 'effects__preview--chrome':
+        imagePreview.style.filter = 'grayscale(1)';
+        imagePreview.style.filter = 'grayscale(' + intenseness / 100 + ')';
+        break;
 
-  var effects = ['none', 'chrome', 'sepia', 'marvin', 'phobos', 'heat'];
+      case 'effects__preview--sepia':
+        imagePreview.style.filter = 'sepia(1)';
+        imagePreview.style.filter = 'sepia(' + intenseness / 100 + ')';
+        break;
+
+      case 'effects__preview--marvin':
+        imagePreview.style.filter = 'invert(100%)';
+        imagePreview.style.filter = 'invert(' + intenseness + '%)';
+        break;
+
+      case 'effects__preview--phobos':
+        imagePreview.style.filter = 'blur(5px)';
+        imagePreview.style.filter = 'blur(' + (intenseness * 5) / 100 + 'px)';
+        break;
+
+      case 'effects__preview--heat':
+        imagePreview.style.filter = 'brightness(3)';
+        imagePreview.style.filter =
+          'brightness(' + (intenseness * 3) / 100 + ')';
+        break;
+      case 'effects__preview--none':
+        imagePreview.style.filter = '';
+        sliderBlock.classList.add('hidden');
+        break;
+    }
+  };
 
   for (var i = 0; i < radioEffects.length; i++) {
     var radio = radioEffects[i];
@@ -38,59 +80,26 @@
     radio.addEventListener(
         'change',
         function (index) {
+          sliderBlock.classList.remove('hidden');
+
+          var max = slider.offsetWidth + 'px';
+          sliderPin.style.left = max;
+          sliderDepth.style.width = 100 + '%';
+
           var effect = effects[index];
           imagePreview.className = '';
           imagePreview.classList.add('effects__preview--' + effect);
+
+          setFilter();
         }.bind(null, i)
     );
   }
 
-  var smallerButton = imageUpload.querySelector('.scale__control--smaller');
-  var biggerButton = imageUpload.querySelector('.scale__control--bigger');
-  var sizeValue = imageUpload.querySelector('.scale__control--value');
-
-  var maxValue = 100;
-  var minValue = 25;
-
-  sizeValue.value = '100%';
-
-  biggerButton.addEventListener('click', function () {
-    sizeValue.value = parseInt(sizeValue.value, 10) + 25;
-    sizeValue.value =
-      sizeValue.value <= maxValue ? sizeValue.value + '%' : 100 + '%';
-
-    imagePreview.style.transform =
-      'scale(' + parseInt(sizeValue.value, 10) / 100 + ')';
-  });
-
-  smallerButton.addEventListener('click', function () {
-    sizeValue.value = parseInt(sizeValue.value, 10) - 25;
-    if (sizeValue.value >= minValue) {
-      sizeValue.value = sizeValue.value + '%';
-    } else {
-      sizeValue.value = 25 + '%';
-    }
-    imagePreview.style.transform =
-      'scale(' + parseInt(sizeValue.value, 10) / 100 + ')';
-  });
-
-  var sliderPin = imageUpload.querySelector('.effect-level__pin');
-  var slider = imageUpload.querySelector('.effect-level__line');
-  var sliderDepth = imageUpload.querySelector('.effect-level__depth');
-
   sliderPin.addEventListener('mousedown', function (evt) {
     evt.preventDefault();
 
-    var getWidth = function (elem) {
-      var box = elem.getBoundingClientRect();
-
-      return box.right - box.left + pageXOffset;
-    };
-
-    var sliderPinWidth = getWidth(sliderPin);
-
     var startCoords = {
-      x: evt.clientX + sliderPinWidth / 2
+      x: evt.clientX + sliderPin.offsetWidth / 2
     };
 
     var onMouseMove = function (moveEvt) {
@@ -104,39 +113,16 @@
 
       if (pinPosition < 0) {
         pinPosition = 0;
-      } else if (pinPosition > getWidth(slider)) {
-        pinPosition = getWidth(slider);
+      } else if (pinPosition > slider.offsetWidth) {
+        pinPosition = slider.offsetWidth;
       }
 
       sliderPin.style.left = pinPosition + 'px';
 
-      var intensity = Math.round((pinPosition * 100) / getWidth(slider));
+      var intensity = Math.round((pinPosition * 100) / slider.offsetWidth);
       sliderDepth.style.width = intensity + '%';
 
-      switch (imagePreview.className) {
-        case 'effects__preview--chrome':
-          imagePreview.style.filter = 'grayscale(' + intensity / 100;
-          break;
-
-        case 'effects__preview--sepia':
-          imagePreview.style.filter = 'sepia(' + intensity / 100;
-          break;
-
-        case 'effects__preview--marvin':
-          imagePreview.style.filter = 'invert(' + intensity + '%)';
-          break;
-
-        case 'effects__preview--phobos':
-          imagePreview.style.filter = 'blur(' + (intensity * 5) / 100 + 'px)';
-          break;
-
-        case 'effects__preview--heat':
-          imagePreview.style.filter = 'brightness(' + (intensity * 3) / 100;
-          break;
-        case 'effects__preview--none':
-          imagePreview.style.filter = '';
-          break;
-      }
+      setFilter(intensity);
 
       startCoords = {
         x: moveEvt.clientX
@@ -153,7 +139,29 @@
     document.addEventListener('mouseup', onMouseUp);
   });
 
-  var inputHashTag = imageUpload.querySelector('.text__hashtags');
+  biggerButton.addEventListener('click', function () {
+    sizeValue.value =
+      parseInt(sizeValue.value, 10) + window.constants.SHIFT_PERCENT;
+    sizeValue.value =
+      sizeValue.value <= window.constants.MAX_PERCENT
+        ? sizeValue.value + '%'
+        : 100 + '%';
+
+    imagePreview.style.transform =
+      'scale(' + parseInt(sizeValue.value, 10) / 100 + ')';
+  });
+
+  smallerButton.addEventListener('click', function () {
+    sizeValue.value =
+      parseInt(sizeValue.value, 10) - window.constants.SHIFT_PERCENT;
+    if (sizeValue.value >= window.constants.MIN_PERCENT) {
+      sizeValue.value = sizeValue.value + '%';
+    } else {
+      sizeValue.value = window.constants.MIN_PERCENT + '%';
+    }
+    imagePreview.style.transform =
+      'scale(' + parseInt(sizeValue.value, 10) / 100 + ')';
+  });
 
   var isUniqArray = function (arr) {
     for (i = 0; i < arr.length; i++) {
@@ -208,8 +216,6 @@
     }
   });
 
-  var textInput = imageUpload.querySelector('.text__description');
-
   var onFocusNotCloseMenu = function (input) {
     input.addEventListener('focus', function () {
       document.removeEventListener('keydown', onMenuEscPress);
@@ -218,4 +224,37 @@
 
   onFocusNotCloseMenu(inputHashTag);
   onFocusNotCloseMenu(textInput);
+
+  var resetForm = function () {
+    inputHashTag.value = '';
+    textInput.value = '';
+    sizeValue.value = '100%';
+    imagePreview.src = 'img/upload-default-image.jpg';
+    imagePreview.style = '';
+    imagePreview.classList = '';
+    imagePreview.classList.add('effects__preview--none');
+  };
+
+  var onSuccessHandler = function () {
+    changeImagePopup.classList.add('hidden');
+    window.data.showMessage('#success');
+    resetForm();
+    window.data.closeMessageOnButton('.success__button', '.success');
+  };
+
+  var errorHandler = function () {
+    changeImagePopup.classList.add('hidden');
+    window.data.showMessage('#error');
+    resetForm();
+    window.data.closeMessageOnButton('.error__button', '.error');
+  };
+
+  form.addEventListener('submit', function (evt) {
+    window.backend.publish(new FormData(form), onSuccessHandler, errorHandler);
+    evt.preventDefault();
+  });
+
+  window.form = {
+    errorHandler: errorHandler
+  };
 })();

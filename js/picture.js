@@ -1,9 +1,6 @@
 'use strict';
 
 (function () {
-  var descriptions = [];
-  window.data.getPhotosDescription(descriptions);
-
   var template = document
     .querySelector('#picture')
     .content.querySelector('.picture');
@@ -19,17 +16,38 @@
     return descriptionElement;
   };
 
-  var fragment = document.createDocumentFragment();
-  var pictures = document.querySelector('.pictures');
+  var picturesNode = document.querySelector('.pictures');
+  var filters = document.querySelector('.img-filters');
 
-  for (var i = 0; i < descriptions.length; i++) {
-    fragment.appendChild(renderDescriptions(descriptions[i]));
-  }
-  pictures.appendChild(fragment);
+  var renderPictures = function (photos) {
+    var fragment = document.createDocumentFragment();
+
+    photos.forEach(function (photo) {
+      fragment.appendChild(renderDescriptions(photo));
+    });
+
+    picturesNode.appendChild(fragment);
+
+    filters.classList.remove('img-filters--inactive');
+
+    var smallPictures = picturesNode.querySelectorAll('.picture');
+
+    for (var i = 0; i < smallPictures.length; i++) {
+      smallPictures[i].setAttribute('data-id', i + 1);
+    }
+  };
+
+  var successHandler = function (photos) {
+    window.picture.loadedData = photos;
+    renderPictures(photos);
+  };
+
+  window.backend.load(successHandler, window.form.errorHandler);
 
   window.picture = {
-    fragment: fragment,
-    pictures: pictures,
-    descriptions: descriptions
+    renderPictures: renderPictures,
+    filters: filters,
+    picturesNode: picturesNode,
+    successHandler: successHandler
   };
 })();
