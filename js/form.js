@@ -18,6 +18,7 @@
   var textInput = imageUpload.querySelector('.text__description');
   var form = document.querySelector('.img-upload__form');
   var inputHashTag = imageUpload.querySelector('.text__hashtags');
+  var fileChooser = imageUpload.querySelector('#upload-file');
 
   var onMenuEscPress = function (evt) {
     if (evt.keyCode === window.constants.ESC_KEYCODE) {
@@ -163,17 +164,6 @@
       'scale(' + parseInt(sizeValue.value, 10) / 100 + ')';
   });
 
-  var isUniqArray = function (arr) {
-    for (i = 0; i < arr.length; i++) {
-      for (var j = i + 1; j < arr.length; j++) {
-        if (arr[i] === arr[j]) {
-          return false;
-        }
-      }
-    }
-    return true;
-  };
-
   var hasHashtag = function (str) {
     return str.lastIndexOf('#') === 0;
   };
@@ -201,7 +191,7 @@
     }
 
     if (inputArr.length > 1) {
-      if (isUniqArray(inputArr) === false) {
+      if (window.data.isUniqArray(inputArr) === false) {
         inputHashTag.setCustomValidity('хэштеги повторяются');
       }
     }
@@ -252,6 +242,25 @@
   form.addEventListener('submit', function (evt) {
     window.backend.publish(new FormData(form), onSuccessHandler, errorHandler);
     evt.preventDefault();
+  });
+
+  fileChooser.addEventListener('change', function () {
+    var file = fileChooser.files[0];
+    var fileName = file.name.toLowerCase();
+
+    var matches = window.constants.FILE_TYPES.some(function (it) {
+      return fileName.endsWith(it);
+    });
+
+    if (matches) {
+      var reader = new FileReader();
+
+      reader.addEventListener('load', function () {
+        imagePreview.src = reader.result;
+      });
+
+      reader.readAsDataURL(file);
+    }
   });
 
   window.form = {

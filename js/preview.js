@@ -2,11 +2,8 @@
 
 (function () {
   var bigPicture = document.querySelector('.big-picture');
-
   var bigPictureCloseButton = bigPicture.querySelector('.big-picture__cancel');
-  var allFilters = window.picture.filters.querySelectorAll(
-      '.img-filters__button'
-  );
+
   var socialComments = bigPicture.querySelector('.social__comments');
   var commentsLoaderButton = bigPicture.querySelector('.comments-loader');
 
@@ -36,13 +33,35 @@
   };
 
   bigPicture.classList.add('hidden');
-  var fragmentComments = document.createDocumentFragment();
 
-  var showComments = function (arr, number) {
-    for (var i = 0; i < number; i++) {
-      fragmentComments.appendChild(renderComments(arr[i]));
+  var showComments = function (commentaries) {
+    var fragmentComments = document.createDocumentFragment();
+    commentaries.forEach(function (item, j) {
+      var comment = renderComments(item);
+
+      if (j >= 5) {
+        comment.classList.add('visually-hidden');
+      }
+      fragmentComments.appendChild(comment);
+    });
+    window.data.deleteElements(socialComments);
+
+    socialComments.appendChild(fragmentComments);
+  };
+
+  var loadNextComments = function () {
+    var hiddenComments = bigPicture.querySelectorAll('li.visually-hidden');
+
+    if (hiddenComments.length > 5) {
+      for (var i = 0; i < 5; i++) {
+        hiddenComments[i].classList.remove('visually-hidden');
+      }
+    } else {
+      for (i = 0; i < hiddenComments.length; i++) {
+        hiddenComments[i].classList.remove('visually-hidden');
+        commentsLoaderButton.classList.add('visually-hidden');
+      }
     }
-    socialComments.replaceWith(fragmentComments);
   };
 
   window.picture.picturesNode.addEventListener('click', function (event) {
@@ -50,6 +69,9 @@
 
     if (target) {
       var id = target.dataset.id;
+
+      var commentsArr = window.picture.loadedData[id - 1].comments;
+      var commentsAmmount = commentsArr.length;
 
       bigPicture.querySelector('.big-picture__img img').src =
         'photos/' + id + '.jpg';
@@ -59,100 +81,48 @@
         window.picture.loadedData[id - 1].likes;
       bigPicture.querySelector('.social__caption').textContent =
         window.picture.loadedData[id - 1].description;
-      var commentsAmmount = window.picture.loadedData[id - 1].comments.length;
-      if (commentsAmmount < 5) {
-        bigPicture
-          .querySelector('.social__comment-count')
-          .classList.add('visually-hidden');
 
+      if (commentsAmmount < 5) {
         commentsLoaderButton.classList.add('visually-hidden');
 
-        bigPicture.querySelector('.comments-count').remove();
-        bigPicture.querySelector(
-            ('.social__comment-count'.textContent =
-            commentsAmmount - 1 + 'комментраиев')
-        );
+        bigPicture.querySelector('.social__comment-count').innerHTML =
+          'Комментариев ' +
+          '<span class="comments-count">' +
+          commentsAmmount +
+          '</span>';
 
-        showComments(
-            window.picture.loadedData[id - 1].comments,
-            commentsAmmount
-        );
+        showComments(commentsArr);
       } else {
-        bigPicture.querySelector(
-            '.comments-count'
-        ).textContent = commentsAmmount;
-        showComments(window.picture.loadedData[id - 1].comments, 5);
+        bigPicture.querySelector('.social__comment-count').innerHTML =
+          '5 из ' +
+          '<span class="comments-count">' +
+          commentsAmmount +
+          '</span>' +
+          '  комментариев';
+
+        if (commentsLoaderButton.classList.contains('visually-hidden')) {
+          commentsLoaderButton.classList.remove('visually-hidden');
+        }
+
+        showComments(commentsArr);
 
         commentsLoaderButton.addEventListener('click', function () {
-          if (commentsAmmount > 5) {
-            showComments(window.picture.loadedData[id - 1].comments, 5);
-          } else {
-            commentsLoaderButton.classList.add('visually-hidden');
-          }
+          loadNextComments();
+
+          var shownComments = bigPicture.querySelectorAll(
+              'li:not(.visually-hidden)'
+          );
+          bigPicture.querySelector('.social__comment-count').innerHTML =
+            shownComments.length +
+            ' из ' +
+            '<span class="comments-count">' +
+            commentsAmmount +
+            '</span>' +
+            '  комментариев';
         });
       }
     }
   });
-
-  var filterRandomPictures = function () {
-    var randomPictures = window.picture.loadedData.slice();
-
-    randomPictures = window.data.shuffle(randomPictures).slice(0, 10);
-
-    window.picture.renderPictures(randomPictures);
-  };
-
-  var filterDiscussedPictures = function () {
-    var discussedPictures = window.picture.loadedData
-      .slice()
-      .sort(function (a, b) {
-        return b.likes - a.likes;
-      });
-    window.picture.renderPictures(discussedPictures);
-  };
-
-  var removePictures = function () {
-    var loadedPictures = window.picture.picturesNode.querySelectorAll(
-        '.picture'
-    );
-    loadedPictures.forEach(function (picture) {
-      picture.remove();
-    });
-  };
-
-  window.picture.filters.addEventListener(
-      'click',
-      window.data.debounce(function (event) {
-        var filter = event.target.closest('.img-filters__button');
-
-        if (filter) {
-          allFilters.forEach(function (oneFilter) {
-            oneFilter.classList.remove('img-filters__button--active');
-          });
-          filter.classList.add('img-filters__button--active');
-
-          switch (filter.id) {
-            case 'filter-random':
-              removePictures();
-              //  window.picture.successHandler(filterRandomPictures());
-              filterRandomPictures();
-
-              break;
-            case 'filter-discussed':
-              removePictures();
-              //  window.picture.successHandler(filterDiscussedPictures());
-              filterDiscussedPictures();
-              break;
-            case 'filter-popular':
-              removePictures();
-
-              //  window.picture.successHandler(window.picture.loadedData);
-              window.picture.renderPictures(window.picture.loadedData);
-              break;
-          }
-        }
-      })
-  );
 
   bigPictureCloseButton.addEventListener('click', closeBigPicture);
 })();

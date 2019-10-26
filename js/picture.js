@@ -1,6 +1,9 @@
 'use strict';
 
 (function () {
+  var picturesNode = document.querySelector('.pictures');
+  var filters = document.querySelector('.img-filters');
+
   var template = document
     .querySelector('#picture')
     .content.querySelector('.picture');
@@ -15,9 +18,6 @@
 
     return descriptionElement;
   };
-
-  var picturesNode = document.querySelector('.pictures');
-  var filters = document.querySelector('.img-filters');
 
   var renderPictures = function (photos) {
     var fragment = document.createDocumentFragment();
