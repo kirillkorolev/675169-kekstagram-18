@@ -212,8 +212,17 @@
     });
   };
 
+  var onBlurAddCloseMenu = function (input) {
+    input.onblur = function () {
+      document.addEventListener('keydown', onMenuEscPress);
+    };
+  };
+
   onFocusNotCloseMenu(inputHashTag);
   onFocusNotCloseMenu(textInput);
+
+  onBlurAddCloseMenu(inputHashTag);
+  onBlurAddCloseMenu(textInput);
 
   var resetForm = function () {
     inputHashTag.value = '';

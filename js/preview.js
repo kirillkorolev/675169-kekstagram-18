@@ -52,8 +52,8 @@
   var loadNextComments = function () {
     var hiddenComments = bigPicture.querySelectorAll('li.visually-hidden');
 
-    if (hiddenComments.length > 5) {
-      for (var i = 0; i < 5; i++) {
+    if (hiddenComments.length > window.constants.COMMENTS_STEP) {
+      for (var i = 0; i < window.constants.COMMENTS_STEP; i++) {
         hiddenComments[i].classList.remove('visually-hidden');
       }
     } else {
@@ -68,10 +68,8 @@
     var target = event.target.closest('.picture');
 
     if (target) {
-      var id = target.dataset.id;
-
+      var id = target.id;
       var imgUrl = target.querySelector('img').getAttribute('src');
-
       var commentsArr = window.picture.loadedData[id - 1].comments;
       var commentsAmmount = commentsArr.length;
 
@@ -84,7 +82,7 @@
       bigPicture.querySelector('.social__caption').textContent =
         window.picture.loadedData[id - 1].description;
 
-      if (commentsAmmount < 5) {
+      if (commentsAmmount < window.constants.COMMENTS_STEP) {
         commentsLoaderButton.classList.add('visually-hidden');
 
         bigPicture.querySelector('.social__comment-count').innerHTML =

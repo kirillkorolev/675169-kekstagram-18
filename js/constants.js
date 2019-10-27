@@ -9,6 +9,7 @@
   var TIMEOUT = 1000;
   var OK_CODE = 200;
   var ESC_KEYCODE = 27;
+  var COMMENTS_STEP = 5;
 
   window.constants = {
     MAX_PERCENT: MAX_PERCENT,
@@ -18,6 +19,7 @@
     FILE_TYPES: FILE_TYPES,
     TIMEOUT: TIMEOUT,
     OK_CODE: OK_CODE,
-    ESC_KEYCODE: ESC_KEYCODE
+    ESC_KEYCODE: ESC_KEYCODE,
+    COMMENTS_STEP: COMMENTS_STEP
   };
 })();
