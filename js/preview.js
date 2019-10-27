@@ -70,11 +70,13 @@
     if (target) {
       var id = target.dataset.id;
 
+      var imgUrl = target.querySelector('img').getAttribute('src');
+
       var commentsArr = window.picture.loadedData[id - 1].comments;
       var commentsAmmount = commentsArr.length;
 
-      bigPicture.querySelector('.big-picture__img img').src =
-        'photos/' + id + '.jpg';
+      bigPicture.querySelector('.big-picture__img img').src = imgUrl;
+
       openBigPicure();
 
       bigPicture.querySelector('.likes-count').textContent =
