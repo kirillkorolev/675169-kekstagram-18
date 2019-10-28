@@ -44,32 +44,26 @@
   var setFilter = function (intenseness) {
     switch (imagePreview.className) {
       case 'effects__preview--chrome':
-        imagePreview.style.filter = 'grayscale(1)';
         imagePreview.style.filter = 'grayscale(' + intenseness / 100 + ')';
         break;
 
       case 'effects__preview--sepia':
-        imagePreview.style.filter = 'sepia(1)';
         imagePreview.style.filter = 'sepia(' + intenseness / 100 + ')';
         break;
 
       case 'effects__preview--marvin':
-        imagePreview.style.filter = 'invert(100%)';
         imagePreview.style.filter = 'invert(' + intenseness + '%)';
         break;
 
       case 'effects__preview--phobos':
-        imagePreview.style.filter = 'blur(5px)';
         imagePreview.style.filter = 'blur(' + (intenseness * 5) / 100 + 'px)';
         break;
 
       case 'effects__preview--heat':
-        imagePreview.style.filter = 'brightness(3)';
         imagePreview.style.filter =
           'brightness(' + (intenseness * 3) / 100 + ')';
         break;
       case 'effects__preview--none':
-        imagePreview.style.filter = '';
         sliderBlock.classList.add('hidden');
         break;
     }
@@ -201,6 +195,11 @@
 
       if (hashTag.length > 20) {
         inputHashTag.setCustomValidity('слишком длинный хэштег');
+        return;
+      }
+
+      if (hashTag.length === 1) {
+        inputHashTag.setCustomValidity('хэштег не может состоять только из #');
         return;
       }
     }
