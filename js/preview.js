@@ -69,11 +69,12 @@
 
     if (target) {
       var id = target.id;
-      var imgUrl = target.querySelector('img').getAttribute('src');
+
       var commentsArr = window.picture.loadedData[id - 1].comments;
       var commentsAmmount = commentsArr.length;
 
-      bigPicture.querySelector('.big-picture__img img').src = imgUrl;
+      bigPicture.querySelector('.big-picture__img img').src =
+        window.picture.loadedData[id - 1].url;
 
       openBigPicure();
 
