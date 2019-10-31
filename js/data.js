@@ -48,6 +48,23 @@
     document.addEventListener('click', closeMessageOnClick);
   };
 
+  var deleteElements = function (block) {
+    while (block.firstChild) {
+      block.removeChild(block.firstChild);
+    }
+  };
+
+  var isUniqArray = function (arr) {
+    for (var i = 0; i < arr.length; i++) {
+      for (var j = i + 1; j < arr.length; j++) {
+        if (arr[i] === arr[j]) {
+          return false;
+        }
+      }
+    }
+    return true;
+  };
+
   var debounce = function (cb) {
     var lastTimeout = null;
 
@@ -66,6 +83,8 @@
     shuffle: shuffle,
     closeMessageOnButton: closeMessageOnButton,
     showMessage: showMessage,
+    deleteElements: deleteElements,
+    isUniqArray: isUniqArray,
     debounce: debounce
   };
 })();

@@ -18,6 +18,7 @@
   var textInput = imageUpload.querySelector('.text__description');
   var form = document.querySelector('.img-upload__form');
   var inputHashTag = imageUpload.querySelector('.text__hashtags');
+  var fileChooser = imageUpload.querySelector('#upload-file');
 
   var onMenuEscPress = function (evt) {
     if (evt.keyCode === window.constants.ESC_KEYCODE) {
@@ -43,32 +44,26 @@
   var setFilter = function (intenseness) {
     switch (imagePreview.className) {
       case 'effects__preview--chrome':
-        imagePreview.style.filter = 'grayscale(1)';
         imagePreview.style.filter = 'grayscale(' + intenseness / 100 + ')';
         break;
 
       case 'effects__preview--sepia':
-        imagePreview.style.filter = 'sepia(1)';
         imagePreview.style.filter = 'sepia(' + intenseness / 100 + ')';
         break;
 
       case 'effects__preview--marvin':
-        imagePreview.style.filter = 'invert(100%)';
         imagePreview.style.filter = 'invert(' + intenseness + '%)';
         break;
 
       case 'effects__preview--phobos':
-        imagePreview.style.filter = 'blur(5px)';
         imagePreview.style.filter = 'blur(' + (intenseness * 5) / 100 + 'px)';
         break;
 
       case 'effects__preview--heat':
-        imagePreview.style.filter = 'brightness(3)';
         imagePreview.style.filter =
           'brightness(' + (intenseness * 3) / 100 + ')';
         break;
       case 'effects__preview--none':
-        imagePreview.style.filter = '';
         sliderBlock.classList.add('hidden');
         break;
     }
@@ -163,17 +158,6 @@
       'scale(' + parseInt(sizeValue.value, 10) / 100 + ')';
   });
 
-  var isUniqArray = function (arr) {
-    for (i = 0; i < arr.length; i++) {
-      for (var j = i + 1; j < arr.length; j++) {
-        if (arr[i] === arr[j]) {
-          return false;
-        }
-      }
-    }
-    return true;
-  };
-
   var hasHashtag = function (str) {
     return str.lastIndexOf('#') === 0;
   };
@@ -201,7 +185,7 @@
     }
 
     if (inputArr.length > 1) {
-      if (isUniqArray(inputArr) === false) {
+      if (window.data.isUniqArray(inputArr) === false) {
         inputHashTag.setCustomValidity('хэштеги повторяются');
       }
     }
@@ -213,6 +197,11 @@
         inputHashTag.setCustomValidity('слишком длинный хэштег');
         return;
       }
+
+      if (hashTag.length === 1) {
+        inputHashTag.setCustomValidity('хэштег не может состоять только из #');
+        return;
+      }
     }
   });
 
@@ -222,8 +211,17 @@
     });
   };
 
+  var onBlurAddCloseMenu = function (input) {
+    input.onblur = function () {
+      document.addEventListener('keydown', onMenuEscPress);
+    };
+  };
+
   onFocusNotCloseMenu(inputHashTag);
   onFocusNotCloseMenu(textInput);
+
+  onBlurAddCloseMenu(inputHashTag);
+  onBlurAddCloseMenu(textInput);
 
   var resetForm = function () {
     inputHashTag.value = '';
@@ -252,6 +250,25 @@
   form.addEventListener('submit', function (evt) {
     window.backend.publish(new FormData(form), onSuccessHandler, errorHandler);
     evt.preventDefault();
+  });
+
+  fileChooser.addEventListener('change', function () {
+    var file = fileChooser.files[0];
+    var fileName = file.name.toLowerCase();
+
+    var matches = window.constants.FILE_TYPES.some(function (it) {
+      return fileName.endsWith(it);
+    });
+
+    if (matches) {
+      var reader = new FileReader();
+
+      reader.addEventListener('load', function () {
+        imagePreview.src = reader.result;
+      });
+
+      reader.readAsDataURL(file);
+    }
   });
 
   window.form = {
