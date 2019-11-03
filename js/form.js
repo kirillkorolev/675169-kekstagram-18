@@ -42,6 +42,7 @@
   closePopupButton.addEventListener('click', closePopup);
 
   var setFilter = function (intenseness) {
+    sizeValue.value = '100%';
     switch (imagePreview.className) {
       case 'effects__preview--chrome':
         imagePreview.style.filter = 'grayscale(' + intenseness / 100 + ')';
@@ -69,9 +70,7 @@
     }
   };
 
-  for (var i = 0; i < radioEffects.length; i++) {
-    var radio = radioEffects[i];
-
+  radioEffects.forEach(function (radio, i) {
     radio.addEventListener(
         'change',
         function (index) {
@@ -84,11 +83,12 @@
           var effect = effects[index];
           imagePreview.className = '';
           imagePreview.classList.add('effects__preview--' + effect);
+          imagePreview.style = '';
 
           setFilter();
         }.bind(null, i)
     );
-  }
+  });
 
   sliderPin.addEventListener('mousedown', function (evt) {
     evt.preventDefault();
@@ -193,7 +193,7 @@
       }
     }
 
-    for (i = 0; i < writtenHashtags.length; i++) {
+    for (var i = 0; i < writtenHashtags.length; i++) {
       var hashTag = writtenHashtags[i];
 
       if (hashTag.length > 20) {
@@ -243,14 +243,14 @@
     changeImagePopup.classList.add('hidden');
     window.data.showMessage('#success');
     resetForm();
-    window.data.closeMessageOnButton('.success__button', '.success');
+    window.data.closeMessageOnButtonClick('.success__button', '.success');
   };
 
   var errorHandler = function () {
     changeImagePopup.classList.add('hidden');
     window.data.showMessage('#error');
     resetForm();
-    window.data.closeMessageOnButton('.error__button', '.error');
+    window.data.closeMessageOnButtonClick('.error__button', '.error');
   };
 
   form.addEventListener('submit', function (evt) {

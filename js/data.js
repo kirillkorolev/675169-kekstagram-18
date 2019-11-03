@@ -4,13 +4,15 @@
   var shuffle = function (arr) {
     var j;
     var temp;
-    for (var i = arr.length - 1; i > 0; i--) {
+    var shuffleArr = arr.slice();
+    shuffleArr.forEach(function (el, i) {
       j = Math.floor(Math.random() * (i + 1));
-      temp = arr[j];
-      arr[j] = arr[i];
-      arr[i] = temp;
-    }
-    return arr;
+      temp = shuffleArr[j];
+      shuffleArr[j] = el;
+      shuffleArr[i] = temp;
+    });
+
+    return shuffleArr;
   };
 
   var onMessageEscPress = function (evt) {
@@ -26,7 +28,7 @@
     document.removeEventListener('click', closeMessageOnClick);
   };
 
-  var closeMessageOnButton = function (buttonSelector, selector) {
+  var closeMessageOnButtonClick = function (buttonSelector, selector) {
     var block = document.querySelector(selector);
     block.classList.add('message');
 
@@ -81,7 +83,7 @@
 
   window.data = {
     shuffle: shuffle,
-    closeMessageOnButton: closeMessageOnButton,
+    closeMessageOnButtonClick: closeMessageOnButtonClick,
     showMessage: showMessage,
     deleteElements: deleteElements,
     isUniqArray: isUniqArray,
