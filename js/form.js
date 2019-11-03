@@ -149,11 +149,12 @@
   smallerButton.addEventListener('click', function () {
     sizeValue.value =
       parseInt(sizeValue.value, 10) - window.constants.SHIFT_PERCENT;
-    if (sizeValue.value >= window.constants.MIN_PERCENT) {
-      sizeValue.value = sizeValue.value + '%';
-    } else {
-      sizeValue.value = window.constants.MIN_PERCENT + '%';
-    }
+
+    sizeValue.value =
+      sizeValue.value >= window.constants.MIN_PERCENT
+        ? sizeValue.value + '%'
+        : window.constants.MIN_PERCENT + '%';
+
     imagePreview.style.transform =
       'scale(' + parseInt(sizeValue.value, 10) / 100 + ')';
   });
@@ -169,37 +170,41 @@
   inputHashTag.addEventListener('input', function () {
     inputHashTag.setCustomValidity('');
 
-    var inputArr = inputHashTag.value
+    var writtenHashtags = inputHashTag.value
       .toLowerCase()
       .trim()
       .split(' ');
 
-    if (inputArr.length > 5) {
-      inputHashTag.setCustomValidity('слишком много хэштегов');
+    if (writtenHashtags.length > 5) {
+      inputHashTag.setCustomValidity(window.constants.HASHTAG_ERRORS.tooMany);
       return;
     }
 
-    if (isArrayHashTags(inputArr) === false) {
-      inputHashTag.setCustomValidity('хэштег должен начинать с #');
+    if (isArrayHashTags(writtenHashtags) === false) {
+      inputHashTag.setCustomValidity(
+          window.constants.HASHTAG_ERRORS.startsWith
+      );
       return;
     }
 
-    if (inputArr.length > 1) {
-      if (window.data.isUniqArray(inputArr) === false) {
-        inputHashTag.setCustomValidity('хэштеги повторяются');
+    if (writtenHashtags.length > 1) {
+      if (window.data.isUniqArray(writtenHashtags) === false) {
+        inputHashTag.setCustomValidity(window.constants.HASHTAG_ERRORS.repeat);
       }
     }
 
-    for (i = 0; i < inputArr.length; i++) {
-      var hashTag = inputArr[i];
+    for (i = 0; i < writtenHashtags.length; i++) {
+      var hashTag = writtenHashtags[i];
 
       if (hashTag.length > 20) {
-        inputHashTag.setCustomValidity('слишком длинный хэштег');
+        inputHashTag.setCustomValidity(window.constants.HASHTAG_ERRORS.tooLong);
         return;
       }
 
       if (hashTag.length === 1) {
-        inputHashTag.setCustomValidity('хэштег не может состоять только из #');
+        inputHashTag.setCustomValidity(
+            window.constants.HASHTAG_ERRORS.onlyOneSymbol
+        );
         return;
       }
     }
@@ -231,6 +236,7 @@
     imagePreview.style = '';
     imagePreview.classList = '';
     imagePreview.classList.add('effects__preview--none');
+    inputHashTag.setCustomValidity('');
   };
 
   var onSuccessHandler = function () {

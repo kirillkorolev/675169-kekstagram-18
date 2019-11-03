@@ -1,10 +1,6 @@
 'use strict';
 
 (function () {
-  var allFilters = window.picture.filters.querySelectorAll(
-      '.img-filters__button'
-  );
-
   var filterRandomPictures = function (photos) {
     var randomPictures = photos.slice();
     randomPictures = window.data.shuffle(randomPictures).slice(0, 10);
@@ -33,9 +29,10 @@
         var filter = event.target.closest('.img-filters__button');
 
         if (filter) {
-          allFilters.forEach(function (oneFilter) {
-            oneFilter.classList.remove('img-filters__button--active');
-          });
+          window.picture.filters
+          .querySelector('.img-filters__button--active')
+          .classList.remove('img-filters__button--active');
+
           filter.classList.add('img-filters__button--active');
           removePictures();
 
